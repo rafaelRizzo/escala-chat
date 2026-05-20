@@ -1,0 +1,23 @@
+services:
+  pocketbase:
+    image: alpine:latest
+    container_name: pocketbase
+    restart: unless-stopped
+    working_dir: /pb
+
+    command: >
+      sh -c "
+      apk add --no-cache unzip &&
+      wget -O /tmp/pb.zip https://github.com/pocketbase/pocketbase/releases/download/v0.38.0/pocketbase_0.38.0_linux_amd64.zip &&
+      unzip /tmp/pb.zip -d /pb &&
+      ./pocketbase serve --http=0.0.0.0:8082
+      "
+
+    volumes:
+      - ./pb_data:/pb/pb_data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

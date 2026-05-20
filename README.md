@@ -28,8 +28,8 @@ Escala Chat é uma solução para facilitar o gerenciamento de horários e escal
 
 ## 📋 Pré-requisitos
 
-- **Node.js** 18+ 
-- **pnpm** (ou npm/yarn)
+- **Node.js** 22+ 
+- **pnpm** 
 - **Docker** e **Docker Compose** (para executar com containers)
 
 ## 🚀 Instalação
