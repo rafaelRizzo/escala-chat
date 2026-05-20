@@ -8,10 +8,10 @@ export default function ScheduleLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="min-h-screen bg-white dark:bg-black">
-            <header className="border-b bg-white dark:bg-black border-zinc-200 dark:border-zinc-800">
+        <div className="min-h-screen">
+            <header className="border-b bg-white dark:bg-neutral-900 border-zinc-200 dark:border-zinc-800">
                 <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Escala do Chat</h1>
+                    <h1 className="text-2xl font-bold">Escalas</h1>
                     <ThemeToggle />
                 </div>
             </header>

@@ -644,6 +644,16 @@ function DailyAssignmentsPageContent() {
         fetchAssignments(1)
     }, [filterDate, filterCollaborator])
 
+    const getCollaboratorPlatforms = (collaboratorId: string, date: string) => {
+        const platforms = new Set<string>()
+        assignments.forEach(a => {
+            if (a.date === date && a.expand?.collaborator?.some(c => c.id === collaboratorId)) {
+                a.expand?.platform?.forEach(p => platforms.add(p.id))
+            }
+        })
+        return platforms.size
+    }
+
     const handleDelete = async (id: string) => {
         try {
             await api.delete(`/collections/daily_assignments/records/${id}`)
@@ -747,9 +757,14 @@ function DailyAssignmentsPageContent() {
                                     <TableCell>
                                         <div className="flex flex-wrap gap-2">
                                             {assignment.expand?.collaborator?.map(c => (
-                                                <Badge key={c.id} variant="secondary" className="bg-blue-500/20 dark:bg-blue-500/30 text-blue-700 dark:text-blue-300 truncate">
-                                                    {c.name}
-                                                </Badge>
+                                                <div key={c.id} className="relative">
+                                                    <Badge className="bg-blue-500/20 dark:bg-blue-500/30 text-blue-700 dark:text-blue-300 truncate">
+                                                        {c.name}
+                                                    </Badge>
+                                                    <Badge variant={"outline"} className="absolute -top-1 -right-2 w-4 h-4 p-0 flex items-center justify-center text-[10px] font-semibold bg-blue-200 text-blue-600 border-white font-mono dark:bg-blue-600 dark:border-blue-950 dark:text-blue-200">
+                                                        {getCollaboratorPlatforms(c.id, assignment.date)}
+                                                    </Badge>
+                                                </div>
                                             ))}
                                         </div>
                                     </TableCell>
