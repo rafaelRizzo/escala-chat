@@ -1,30 +1,29 @@
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml* yarn.lock* package-lock.json* .npmrc* ./
-
-RUN npm install -g pnpm && \
-    mkdir -p ~/.pnpm && \
-    echo '{"msw": true, "sharp": true, "unrs-resolver": true}' > ~/.pnpm/build-approvals.json && \
-    pnpm install --frozen-lockfile
+COPY pnpm-lock.yaml package.json ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-RUN pnpm build || npm run build
+ARG NEXT_PUBLIC_URL_API
+ENV NEXT_PUBLIC_URL_API=$NEXT_PUBLIC_URL_API
 
-FROM node:22-alpine
+RUN pnpm build
+
+FROM node:24-alpine
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 RUN apk add --no-cache dumb-init
 
-COPY package.json pnpm-lock.yaml* yarn.lock* package-lock.json* .npmrc* ./
-
-RUN npm install -g pnpm && \
-    mkdir -p ~/.pnpm && \
-    echo '{"msw": true, "sharp": true, "unrs-resolver": true}' > ~/.pnpm/build-approvals.json && \
-    pnpm install --frozen-lockfile --prod
+COPY pnpm-lock.yaml package.json ./
+RUN pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/public /app/public
@@ -34,4 +33,4 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
