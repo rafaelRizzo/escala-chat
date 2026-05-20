@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* yarn.lock* package-lock.json* .npmrc* ./
 
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+RUN npm install -g pnpm && pnpm config set ignore-scripts false && pnpm install --frozen-lockfile
 
 COPY . .
 
@@ -18,7 +18,7 @@ RUN apk add --no-cache dumb-init
 
 COPY package.json pnpm-lock.yaml* yarn.lock* package-lock.json* .npmrc* ./
 
-RUN npm install -g pnpm && pnpm install --frozen-lockfile --prod
+RUN npm install -g pnpm && pnpm config set ignore-scripts false && pnpm install --frozen-lockfile --prod
 
 COPY --from=builder /app/.next /app/.next
 COPY --from=builder /app/public /app/public
