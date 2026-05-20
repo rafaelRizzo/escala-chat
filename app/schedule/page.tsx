@@ -6,7 +6,7 @@ import { format, parse } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ChevronLeft, ChevronRight, Users, Monitor, Clock, Building, Calendar as CalendarIcon } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Users, Monitor, Clock, Building, ChevronDown } from 'lucide-react'
 import { useScheduleRealtime } from '@/hooks/useScheduleRealtime'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -98,7 +98,7 @@ function SchedulePageContent() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold capitalize">
                         {format(today, 'EEEE', { locale: ptBR })}
@@ -107,7 +107,7 @@ function SchedulePageContent() {
                         {format(today, "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
                     </p>
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="hidden md:flex gap-2 items-center">
                     <Button
                         variant="outline"
                         size="sm"
@@ -121,11 +121,15 @@ function SchedulePageContent() {
                     </Button>
                     <Popover>
                         <PopoverTrigger asChild>
-                            <Button variant="outline" size="sm" title="Calendário">
-                                <CalendarIcon className="h-4 w-4" />
+                            <Button
+                                variant="outline"
+                                className="w-[212px] justify-between text-left font-normal"
+                            >
+                                {format(today, "PPP", { locale: ptBR })}
+                                <ChevronDown className="h-4 w-4" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="end" side="bottom">
+                        <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
                                 mode="single"
                                 selected={today}
@@ -151,6 +155,54 @@ function SchedulePageContent() {
                     </Button>
                 </div>
             </div>
+            <div className="flex md:hidden gap-2 items-center justify-center">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                        const prev = new Date(today)
+                        prev.setDate(prev.getDate() - 1)
+                        updateDate(prev)
+                    }}
+                >
+                    <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm font-medium">{format(today, "d 'de' MMMM 'de' yyyy", { locale: ptBR })}</span>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                        const next = new Date(today)
+                        next.setDate(next.getDate() + 1)
+                        updateDate(next)
+                    }}
+                >
+                    <ChevronRight className="h-4 w-4" />
+                </Button>
+            </div>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        className="w-full md:hidden justify-between text-left font-normal"
+                    >
+                        {format(today, "PPP", { locale: ptBR })}
+                        <ChevronDown className="h-4 w-4" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0" align="center" side="bottom">
+                    <Calendar
+                        mode="single"
+                        selected={today}
+                        onSelect={(date) => {
+                            if (date) {
+                                updateDate(date)
+                            }
+                        }}
+                        locale={ptBR}
+                    />
+                </PopoverContent>
+            </Popover>
 
             {loading ? (
                 <div className="py-12 text-center text-muted-foreground">Carregando...</div>
