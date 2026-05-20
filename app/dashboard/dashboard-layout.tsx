@@ -40,7 +40,7 @@ export function DashboardLayoutClient({
     }
 
     return (
-        <SidebarProvider>
+        <SidebarProvider className="min-h-screen">
             <Sidebar>
                 <SidebarHeader className="p-4">
                     <h1 className="text-lg font-semibold flex items-center gap-2">
@@ -84,11 +84,11 @@ export function DashboardLayoutClient({
                     </SidebarMenu>
                 </SidebarFooter>
             </Sidebar>
-            <SidebarInset>
-                <header className="flex h-16 items-center gap-4 border-b px-6">
+            <SidebarInset className="overflow-hidden flex flex-col">
+                <header className="flex h-16 items-center gap-4 border-b px-6 flex-shrink-0">
                     <SidebarTrigger size="sm" />
                 </header>
-                <main className="flex-1 p-6">
+                <main className="flex-1 p-6 overflow-auto">
                     {children}
                 </main>
             </SidebarInset>
