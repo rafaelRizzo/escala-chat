@@ -7,14 +7,19 @@ services:
 
     command: >
       sh -c "
-      apk add --no-cache unzip &&
-      wget -O /tmp/pb.zip https://github.com/pocketbase/pocketbase/releases/download/v0.38.0/pocketbase_0.38.0_linux_amd64.zip &&
-      unzip /tmp/pb.zip -d /pb &&
-      ./pocketbase serve --http=0.0.0.0:8082
+      apk add --no-cache wget unzip &&
+      if [ ! -f /pb/pocketbase ]; then
+        wget -O /tmp/pb.zip https://github.com/pocketbase/pocketbase/releases/download/v0.38.0/pocketbase_0.38.0_linux_amd64.zip &&
+        unzip -o /tmp/pb.zip -d /pb &&
+        chmod +x /pb/pocketbase;
+      fi &&
+      exec /pb/pocketbase serve --http=0.0.0.0:8082
       "
 
     volumes:
       - ./pb_data:/pb/pb_data
+      - ./pb_bin:/pb
+
     networks:
       - proxy
 
